@@ -1,0 +1,27 @@
+<h1>CATEGORY</h1>
+
+<nz-table #table [nzData]="categories">
+  <thead>
+    <tr>
+      <th nzWidth="50px">ID</th>
+      <th>Name</th>
+      <th>Subcategories</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let category of categories">
+      <td>{{ category.id }}</td>
+      <td>{{ category.name }}</td>
+      <td>
+        <ul>
+          <li *ngFor="let subcategory of category.subcategories">{{ subcategory.name }}</li>
+        </ul>
+      </td>
+      <td>
+        <span nz-icon nzType="edit" (click)="editCategory(category.id)" style="cursor: pointer; margin-right: 8px;"></span>
+        <span nz-icon nzType="delete" style="cursor: pointer;" (click)="deleteCategory(category.id)"></span>
+      </td>
+    </tr>
+  </tbody>
+</nz-table>

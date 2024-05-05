@@ -3,16 +3,57 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { NZ_I18N } from 'ng-zorro-antd/i18n';
+import { en_US } from 'ng-zorro-antd/i18n';
+import { registerLocaleData } from '@angular/common';
+import en from '@angular/common/locales/en';
+import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { IconsProviderModule } from './icons-provider.module';
+import { NzLayoutModule } from 'ng-zorro-antd/layout';
+import { NzMenuModule } from 'ng-zorro-antd/menu';
+import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { ProductsComponent } from './product/products/products.component';
+import { CustomersComponent } from './customers/customers.component';
+import { OrdersComponent } from './order/orders/orders.component';
+import { CategoryComponent } from './Categories/category/category.component';
+import { SubcategoryComponent } from './Categories/subcategory/subcategory.component';
+import { NzIconModule } from 'ng-zorro-antd/icon'; 
+import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm'; 
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NavBarComponent } from './nav-bar/nav-bar.component'
+registerLocaleData(en);
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    DashboardComponent,
+    ProductsComponent,
+    CustomersComponent,
+    OrdersComponent,
+    CategoryComponent,
+    SubcategoryComponent,
+    NavBarComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    FormsModule,
+    HttpClientModule,
+    BrowserAnimationsModule,
+    IconsProviderModule,
+    NzLayoutModule,
+    NzMenuModule,
+    NzDropDownModule,
+    NzIconModule, 
+    NzTableModule,
+    NzPopconfirmModule
   ],
-  providers: [],
+  providers: [
+    { provide: NZ_I18N, useValue: en_US }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

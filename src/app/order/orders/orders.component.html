@@ -1,0 +1,31 @@
+<h1>ORDERS</h1>
+
+<nz-table #table [nzData]="orders">
+  <thead>
+    <tr>
+      <th nzWidth="50px">ID</th>
+      <th>Customer ID</th>
+      <th>Created At</th>
+      <th>Updated At</th>
+      <th>Status</th>
+      <th>Total Quantity</th>
+      <th>Total Price</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let order of orders">
+      <td>{{ order.orderId }}</td>
+      <td>{{ order.customerId }}</td>
+      <td>{{ order.createdAt }}</td>
+      <td>{{ order.updatedAt }}</td>
+      <td>{{ order.status }}</td>
+      <td>{{ order.totalQuantity }}</td>
+      <td>{{ order.totalPrice }}</td>
+      <td>
+        <span nz-icon nzType="edit" (click)="editOrder(order.orderId)" style="cursor: pointer; margin-right: 8px;"></span>
+        <span nz-icon nzType="delete" (click)="deleteOrder(order.orderId)" style="cursor: pointer;"></span>
+      </td>
+    </tr>
+  </tbody>
+</nz-table>

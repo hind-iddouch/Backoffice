@@ -1,0 +1,40 @@
+<h1>PRODUCTS</h1>
+
+<nz-table #table [nzData]="products">
+  <thead>
+    <tr>
+      <th nzWidth="50px">ID</th>
+      <th>Name</th>
+      <th>Price</th>
+      <th>Description</th>
+      <th>Image</th>
+      <th>Subcategory</th>
+      <th>Time to Prepare (minutes)</th>
+      <th>Availability</th>
+      <th>Created At</th>
+      <th>Updated At</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let product of products">
+      <td>{{ product.id }}</td>
+      <td>{{ product.name }}</td>
+      <td>{{ product.price }}</td>
+      <td>{{ product.description }}</td>
+      <td><img [src]="product.imageUrl" width="50" height="50"></td>
+      <td>{{ product.subcategoryName }}</td>
+      <td>{{ product.timeToPrepareInMinute }}</td>
+      <td>{{ product.availability ? 'Available' : 'Not Available' }}</td>
+      <td>{{ product.createdAt }}</td>
+      <td>{{ product.updatedAt }}</td>
+      <td>
+        <span nz-icon nzType="edit" (click)="editProduct(product.id)" style="cursor: pointer; margin-right: 8px;"></span>
+
+          <span nz-icon nzType="delete" style="cursor: pointer;"></span>
+        
+      </td>
+      
+    </tr>
+  </tbody>
+</nz-table>
