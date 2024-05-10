@@ -11,11 +11,17 @@ export class CategoryService {
   constructor(private http: HttpClient) { }
 
 
+  postCategories(Category: any): Observable<any> {
+    return this.http.post(BASIC_URL + "/categories",Category);
+  }
   getAllCategories(): Observable<any> {
-    return this.http.get(BASIC_URL + "/PRODUCT-CATALOG-SERVICE/categories");
+    return this.http.get(BASIC_URL + "/categories");
   }
 
+  updateCategory(id: number, Category: any): Observable<any> {
+    return this.http.put(BASIC_URL + "/categories/" +id,Category);
+  }
   deleteCategory(id: number): Observable<any> {
-    return this.http.delete(BASIC_URL + "/PRODUCT-CATALOG-SERVICE/categories/" + id);
+    return this.http.delete(BASIC_URL + "/categories/" +id);
   }
 }

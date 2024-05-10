@@ -12,10 +12,10 @@ export class OrderService {
   constructor(private http: HttpClient) { }
 
   getAllOrders(): Observable<any> {
-    return this.http.get(BASIC_URL + "/ORDERS/orders");
+    return this.http.get(BASIC_URL + "/orders");
   }
 
   deleteOrder(orderId: number): Observable<any> {
-    return this.http.delete(BASIC_URL + "/ORDERS/orders/" + orderId);
+    return this.http.delete(BASIC_URL + "/orders/" + orderId);
   }
 }

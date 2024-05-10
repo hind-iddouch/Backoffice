@@ -12,10 +12,16 @@ export class SubcategoryService {
   constructor(private http: HttpClient) { }
 
   getAllSubcategories(): Observable<any> {
-    return this.http.get(BASIC_URL + "/PRODUCT-CATALOG-SERVICE/subcategories");
+    return this.http.get(BASIC_URL + "/subcategories");
+  }
+  postSubCategories(Subcategory: any): Observable<any> {
+    return this.http.post(BASIC_URL + "/subcategories",Subcategory);
+  }
+  updateSubCategories(id: number, Subcategory: any): Observable<any> {
+    return this.http.put(BASIC_URL + "/subcategories/" +id,Subcategory);
   }
 
   deleteSubcategory(id: number): Observable<any> {
-    return this.http.delete(BASIC_URL + "/PRODUCT-CATALOG-SERVICE/subcategories/" + id);
+    return this.http.delete(BASIC_URL + "/subcategories/" + id);
   }
 }

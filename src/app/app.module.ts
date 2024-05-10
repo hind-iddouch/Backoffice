@@ -13,7 +13,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { IconsProviderModule } from './icons-provider.module';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
-import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ProductsComponent } from './product/products/products.component';
 import { CustomersComponent } from './customers/customers.component';
@@ -23,7 +22,10 @@ import { SubcategoryComponent } from './Categories/subcategory/subcategory.compo
 import { NzIconModule } from 'ng-zorro-antd/icon'; 
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm'; 
 import { NzTableModule } from 'ng-zorro-antd/table';
-import { NavBarComponent } from './nav-bar/nav-bar.component'
+import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
+import { NavBarComponent } from './nav-bar/nav-bar.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { DashHomeComponent } from './dash-home/dash-home.component'
 registerLocaleData(en);
 
 @NgModule({
@@ -35,7 +37,8 @@ registerLocaleData(en);
     OrdersComponent,
     CategoryComponent,
     SubcategoryComponent,
-    NavBarComponent
+    NavBarComponent,
+    DashHomeComponent
   ],
   imports: [
     BrowserModule,
@@ -49,6 +52,7 @@ registerLocaleData(en);
     NzDropDownModule,
     NzIconModule, 
     NzTableModule,
+    ReactiveFormsModule,
     NzPopconfirmModule
   ],
   providers: [

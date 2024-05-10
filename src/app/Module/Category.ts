@@ -1,12 +1,7 @@
-export interface Subcategory {
-  id: number;
-  name: string;
-  categoryId: number;
-  categoryName: string;
-}
+import { Subcategory } from "./Subcategory";
 
 export interface Category {
   id: number;
   name: string;
-  subcategories: Subcategory[];
+  subcategories: Subcategory[] ;
 }

@@ -14,22 +14,22 @@ export class ProductService {
   constructor(private http: HttpClient) { }
 
   postProduct(Product: any): Observable<any> {
-    return this.http.post(BASIC_URL + "/PRODUCT-CATALOG-SERVICE/products", Product);
+    return this.http.post(BASIC_URL + "/products", Product);
   }
 
   getAllProducts(): Observable<any> {
-    return this.http.get(BASIC_URL + "/PRODUCT-CATALOG-SERVICE/products");
+    return this.http.get(BASIC_URL + "/products");
   }
 
   getProductById(id: number): Observable<any> {
-    return this.http.get(BASIC_URL + "/PRODUCT-CATALOG-SERVICE/products/" +id);
+    return this.http.get(BASIC_URL + "/products/" +id);
   }
 
   updateProduct(id: number, Product: any): Observable<any> {
-    return this.http.put(BASIC_URL + "/PRODUCT-CATALOG-SERVICE/products/" +id, Product);
+    return this.http.put(BASIC_URL + "/products/" +id, Product);
   }
 
   deleteProduct(id: number): Observable<any> {
-    return this.http.delete(BASIC_URL + "/PRODUCT-CATALOG-SERVICE/products/" +id);
+    return this.http.delete(BASIC_URL + "/products/" +id);
   }
 }
