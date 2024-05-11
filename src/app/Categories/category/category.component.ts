@@ -14,18 +14,23 @@ export class CategoryComponent implements OnInit{
   postCategoryForm!: FormGroup;
   updateCategoryForm!: FormGroup;
   categories: Category[] = [];
+  // Add a property to hold the current category being updated
+  currentCategory: Category | null = null;
   
 
-  constructor(private categoryService: CategoryService,private fb: FormBuilder,
-    private router : Router) { }
+  constructor(
+    private categoryService: CategoryService,
+    private fb: FormBuilder,
+    private router : Router
+  ) { }
 
   ngOnInit() {
     this.postCategoryForm = this.fb.group({
-      id: [null, [Validators.required]], 
+      id: [null], 
       name: [null, [Validators.required]], 
     });
     this.updateCategoryForm = this.fb.group({
-      id: [null, [Validators.required]], 
+      id: [null], 
       name: [null, [Validators.required]], 
     });
     this.getAllCategories();
@@ -37,27 +42,62 @@ export class CategoryComponent implements OnInit{
       this.categories = res;
     });
   }
-  updateCategory(): void {
+
+  setUpdateCategory(category: Category) {
+    console.log('Category ID:', category.id); // Log the ID value
+    this.currentCategory = category ; // Copy category object to prevent mutation
+    this.updateCategoryForm.patchValue({
+        id: category.id,
+        name: category.name,
+    });
+}
+
+updateCategories(): void {
     const id = this.updateCategoryForm.get('id')?.value;
-    const updatedCategory: Category = this.updateCategoryForm.value;
-    this.categoryService.updateCategory(id, updatedCategory).subscribe(
-        (res: Category) => {
-            // Update the category in the list
-            const index = this.categories.findIndex(c => c.id === id);
-            if (index !== -1) {
-                this.categories[index] = res;
-            }
-            
-           
+    if (!id) {
+        console.error('ID is null');
+        return;
+    }
+    const updatedCategory: Category = {
+        id: id,
+        name: this.updateCategoryForm.get('name')?.value,
+        subcategories: [],
+    };
+    this.categoryService.updateCategories(id, updatedCategory).subscribe(
+        (res) => {
+            console.log(res);
+            this.router.navigateByUrl('/category');
+        },
+        (error) => {
+            console.error(error);
+            // Handle error appropriately
         }
     );
 }
-  deleteCategory(id: number) {
-    this.categoryService.deleteCategory(id).subscribe((res) => {
-      console.log(res);
-      this.getAllCategories();
-    });
+
+
+confirmDelete(): void {
+  if (this.currentCategory) {
+    this.deleteCategory(this.currentCategory.id);
   }
+}
+
+deleteCategory(id: number): void {
+  console.log("Deleting category with ID:", id);
+  this.categoryService.deleteCategory(id).subscribe(
+    (res) => {
+      console.log(res);
+      this.categories = this.categories.filter((category) => category.id !== id);
+      console.log("Categories after deletion:", this.categories);
+      this.currentCategory = null;
+    },
+    (error) => {
+      console.error(error);
+      // Handle error appropriately
+    }
+  );
+}
+
   postCategories(){
     console.log(this.postCategoryForm.value);
     this.categoryService.postCategories(this.postCategoryForm.value).subscribe((res)=>{

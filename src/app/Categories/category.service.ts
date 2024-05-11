@@ -18,7 +18,7 @@ export class CategoryService {
     return this.http.get(BASIC_URL + "/categories");
   }
 
-  updateCategory(id: number, Category: any): Observable<any> {
+  updateCategories(id: number, Category: any): Observable<any> {
     return this.http.put(BASIC_URL + "/categories/" +id,Category);
   }
   deleteCategory(id: number): Observable<any> {

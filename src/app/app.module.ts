@@ -15,7 +15,7 @@ import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ProductsComponent } from './product/products/products.component';
-import { CustomersComponent } from './customers/customers.component';
+import { CustomersComponent } from './Users/customers/customers.component';
 import { OrdersComponent } from './order/orders/orders.component';
 import { CategoryComponent } from './Categories/category/category.component';
 import { SubcategoryComponent } from './Categories/subcategory/subcategory.component';
