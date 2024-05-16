@@ -6,7 +6,7 @@ interface Product {
   imageUrl: string;
   subcategoryName: string;
   timeToPrepareInMinute: number;
-  availability: boolean;
+  status: string;
   createdAt: string;
   updatedAt: string;
 }

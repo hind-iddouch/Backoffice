@@ -8,4 +8,6 @@ export interface Customer{
     createdAt: string;
     updatedAt: string;
     phone:string;
+    status:string;
+    confirmedAt:string;
 }

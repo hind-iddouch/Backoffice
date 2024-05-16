@@ -29,34 +29,27 @@ export class ProductsComponent implements OnInit {
   ) { }
 
     
-  previewImage(event: any) {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        this.imageUrl = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
+  // Adjust the previewImage method to correctly handle image uploads
+previewImage(event: any) {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      this.imageUrl = e.target.result;
+      this.postProductForm.patchValue({ imageUrl: e.target.result }); // Set imageUrl in form
+    };
+    reader.readAsDataURL(file);
   }
-  /*async previewImage(event: any) {
-    const file = event.target.files[0];
-    if (file) {
-      const path = 'yt/${file.name}'
-      const uploadTask= await this.fireStorage.upload(path,file)
-      const url= await uploadTask.ref.getDownloadURL()
-      console.log(url)
-      }
-  }
-  */
+}
+  
   ngOnInit() {
     this.postProductForm = this.fb.group({
-      name: [null, [Validators.required]], 
+      name: [null, [Validators.required]],
       price: [null, [Validators.required]],
       description: [null, [Validators.required]],
-      imageUrl: [null, [Validators.required]],
+      imageUrl: [null, [Validators.required]], // Ensure correct field name for the image URL
       timeToPrepareInMinute: [null, [Validators.required]],
-      availability: [null, [Validators.required]],
+      status: [null, [Validators.required]],
       id: [null, [Validators.required]],
     });
     this.getAllProducts();
@@ -75,20 +68,100 @@ export class ProductsComponent implements OnInit {
       this.subcategories = res;
     });
   }
-  
+  closeModalCate() {
+    this.isModalOpen = false;
+  }
   postProduct(){
     console.log(this.postProductForm.value);
     this.productService.postProduct(this.postProductForm.value).subscribe((res)=>{
     console.log(res);
-    this.router.navigateByUrl("/products");}
+    this.getAllProducts();
+
+    this.closeModalCate();
+    }
     )}
 
-  deleteProduct(id: number) {
-    this.productService.deleteProduct(id).subscribe((res) => {
-      console.log(res);
+
+    //Add Modal Attrribute
+isAddModalOpen: boolean = false;
+//Edit Modal Attribute
+isEditModalOpen: boolean = false;
+//Delete Modal Attribute
+isDeleteModalOpen: boolean = false;
+//Details Modal Attribute
+isDetailsModalOpen: boolean = false;
+// Variable to track selected field ID
+selectedCategoryid: number | undefined; 
+
+//Toggle Edit Modal
+closeModal(str: string, id: number) {
+
+  switch (str) {
+
+    case 'add': 
+                this.isAddModalOpen = !this.isAddModalOpen;
+                break;
+
+    case 'edit': 
+                this.isEditModalOpen = !this.isEditModalOpen;
+                this.selectedCategoryid = id;
+             
+
+              break;
+    case 'delete':
+                this.isDeleteModalOpen = !this.isDeleteModalOpen;
+                console.log("toggle confirm delete called");
+                this.selectedCategoryid = id;
+                break;
+
+               
+    
+    
+    case 'details': 
+                this.isDetailsModalOpen = !this.isDetailsModalOpen;
+                console.log("toggle details called");
+                this.selectedCategoryid = id;
+                break;
+
+    case 'cancel':
+                this.selectedCategoryid = 0;
+                this.isDeleteModalOpen = false;
+                break;
+
+    case 'alert':
+                this.deleteAlert = !this.deleteAlert;
+                break;
+  };
+
+}
+
+    // Delete Stuff
+deleteAlert: boolean = false;
+isConfirmDelete: boolean =false;
+
+  // Method to trigger delete confirmation modal for the selected field
+confirmDelete(id: number): void {
+  console.log("loool")
+this.selectedCategoryid = id;
+  this.isConfirmDelete = !this.isConfirmDelete;
+
+  this.productService.deleteProduct(id).subscribe({
+    next: () => {
+
+      // Delete successful, reset selected field and hide modal
+      this.selectedCategoryid = 0;
       this.getAllProducts();
-    });
-  }
+      this.closeModal('delete', id);
+      console.log('Category deleted successfully');
+    },
+    error: (error) => {
+      // Handle error if deletion fails
+      console.error('Error deleting field:', error);
+    }
+  });
+  
+  this.selectedCategoryid = 0;
+}
 
   toggleForm(): void {
     this.showForm = !this.showForm;
@@ -103,7 +176,7 @@ export class ProductsComponent implements OnInit {
   toggleModalProduct(): void {
     this.isModalOpen = !this.isModalOpen;
   }
-  closeModal() {
+  closeModaladd() {
     this.isModalOpen = false;
   }
 

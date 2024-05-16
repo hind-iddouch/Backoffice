@@ -1,4 +1,4 @@
-<div class="layout-wrapper layout-content-navbar">
+<div class="layout-wrapper layout-content-navbar"  *ngIf="isLoggedIn()">
   <div class="layout-container">
     <!-- Menu -->
 
@@ -15,7 +15,16 @@
       <div class="menu-inner-shadow"></div>
 
       <ul class="menu-inner py-1">
-        <li class="menu-item">
+
+        
+
+      <li class="menu-item"  [routerLinkActive]="'active'">
+        <a routerLink="/dashhome" class="menu-link">
+          <i class="menu-icon tf-icons ti ti-brand-producthunt"></i>
+          <div data-i18n="dashboard">Dashboard</div>
+        </a>
+      </li>
+        <li class="menu-item" [routerLinkActive]="'active'">
           <a routerLink="/products" class="menu-link">
             <i class="menu-icon tf-icons ti ti-brand-producthunt"></i>
             <div data-i18n="Email">Products</div>
@@ -23,7 +32,7 @@
         </li>
 
         <!-- Categories -->
-        <li class="menu-item active open">
+        <li class="menu-item  open">
           <a
             href="javascript:void(0);"
             class="menu-link menu-toggle"
@@ -34,21 +43,21 @@
             <div class="badge bg-label-primary rounded-pill ms-auto">2</div>
           </a>
           <ul class="menu-sub" *ngIf="isMenuOpen">
-            <li class="menu-item active">
+            <li class="menu-item"  [routerLinkActive]="'active'">
               <a routerLink="/category" class="menu-link">
                 <div data-i18n="Analytics">Category</div>
               </a>
             </li>
-            <li class="menu-item">
+            <li class="menu-item" [routerLinkActive]="'active'" >
               <a routerLink="/subcategory" class="menu-link">
-                <div data-i18n="CRM">Sub Category</div>
+                <div data-i18n="CRM">SubCategory</div>
               </a>
             </li>
           </ul>
         </li>
 
         <!-- Customers -->
-        <li class="menu-item">
+        <li class="menu-item" [routerLinkActive]="'active'">
           <a routerLink="/Customers" class="menu-link">
             <i class="menu-icon tf-icons ti ti-user"></i>
             <div data-i18n="Layouts">Customers</div>
@@ -56,7 +65,7 @@
         </li>
 
         <!-- Order -->
-        <li class="menu-header small text-uppercase">
+        <li class="menu-header small text-uppercase" [routerLinkActive]="'active'">
           <a routerLink="/Orders" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons ti ti-truck-delivery"></i>
             <div data-i18n="Layouts">Order</div>
@@ -151,13 +160,13 @@
                   </a>
                 </li>
                 <li>
-                  <a
+                  <button
                     class="dropdown-item"
-                    href="pages-account-settings-account.html"
+                    (click)="logout()"
                   >
                     <i class="ti ti-settings me-2 ti-sm"></i>
-                    <span class="align-middle">Settings</span>
-                  </a>
+                    <span class="align-middle">Log Out</span>
+                </button>
                 </li>
               </ul>
             </li>

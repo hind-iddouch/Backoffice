@@ -9,7 +9,7 @@ import { en_US } from 'ng-zorro-antd/i18n';
 import { registerLocaleData } from '@angular/common';
 import en from '@angular/common/locales/en';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { IconsProviderModule } from './icons-provider.module';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
@@ -24,10 +24,11 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm'; 
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
-import { NavBarComponent } from './nav-bar/nav-bar.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DashHomeComponent } from './dash-home/dash-home.component'
 import { environment } from './environment/environment';
+import { LoginComponent } from './auth/login/login.component';
+import { TokenInterceptorService } from './auth/token-interceptor.service';
 registerLocaleData(en);
 
 @NgModule({
@@ -39,8 +40,8 @@ registerLocaleData(en);
     OrdersComponent,
     CategoryComponent,
     SubcategoryComponent,
-    NavBarComponent,
-    DashHomeComponent
+    DashHomeComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -59,9 +60,9 @@ registerLocaleData(en);
     AngularFireStorageModule,
     NzPopconfirmModule
   ],
-  providers: [
-    { provide: NZ_I18N, useValue: en_US }
-  ],
+  providers: [{
+    provide:HTTP_INTERCEPTORS, useClass:TokenInterceptorService, multi:true,
+}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

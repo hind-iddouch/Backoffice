@@ -22,6 +22,7 @@ export class SubcategoryService {
   }
 
   deleteSubcategory(id: number): Observable<any> {
+    console.log("mokk")
     return this.http.delete(BASIC_URL + "/subcategories/" + id);
   }
 }
