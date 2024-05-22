@@ -1,9 +1,8 @@
 <div class="card">
+  <h1 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Products</h1>
   <div class="table-responsive text-nowrap">
-    <button
-      (click)="toggleModalProduct()"
-      class="px-4 py-2 mb-2 bg-blue-800 hover:bg-blue-600 text-white rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 float-right"
-    >
+    <button (click)="toggleModalProduct()"
+      class="px-4 py-2 mb-2 bg-blue-800 hover:bg-blue-600 text-white rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 float-right">
       Add Product
     </button>
 
@@ -26,39 +25,37 @@
           <td>
             <strong>{{ product.name }}</strong>
           </td>
-          
+
           <td><img [src]="product.imageUrl" width="50" height="50"></td>
-          <td>{{ product.price }}</td>
+          <td>{{ product.price }}$</td>
           <td>{{ product.description }}</td>
           <td>{{ product.timeToPrepareInMinute }}</td>
-          <td>{{ product.status}}</td>
-          
+          <td>
+            <span [ngClass]="{
+              'bg-green-100 text-green-800': product.status === 'AVAILABLE',
+              'bg-red-100 text-red-800': product.status !== 'AVAILABLE'
+            }" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full">
+              {{ product.status }}
+            </span>
+          </td>
+
+
 
           <td>
-            <div class="dropdown">
-              <button
-                type="button"
-                class="btn p-0 dropdown-toggle hide-arrow"
-                data-bs-toggle="dropdown"
-              >
-                <i class="ti ti-dots-vertical"></i>
-              </button>
-              <div class="dropdown-menu">
-                <a
-                  class="dropdown-item"
-                  data-bs-toggle="modal"
-                  data-bs-target="#enableOTP"
-                >
-                  <i class="ti ti-pencil me-1"></i> Edit
-                </a>
+            <div class="dropdown flex flex-row">
+              <a class="dropdown-item" data-bs-toggle="modal" (click)="closeModal('edit', product.id)" data-bs-target="#enableOTP">
+                <img
+                  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAWdJREFUSEvFlLlKRDEUhr9pLOwEcQoFwUJRcasVt9Z3EsX38QnGfXkDC/cFRRQLtXCpND+cyJ0xud7ccZg0uWSG7zv5c5IKLR6VFvNpRtABLAGdwDrwHiq2rKAL2AQmDXoJzAM3jZIyAsG3gAngHngFhux7CnjISlIF3cCGi2QcOAMWgQ+gZmurDr5SVtDjYtgGhg1wbrF8mnQMWAOWywiqFovgj8AzMAjcAm/2rXVJNP+MIhEJfggMAHfucGeBFxfPLjBiJL9+kXrIjfBp4BrIdpHgfv1Xp+btoNeq9JVn4XvAqMnmbA7e2ZhA8AOg32KJwbWuHURHSCDozn/AZQ0JrgyuWbdTmav/dXPVJaeugIW/KvdbCgm+7Mc+gwiu/lfmJ9ZFdbc1NSIvkFzwfXsKjt1d0IEWhsci8oJsYYLPAE+pz3teRJ51ZGeRDI/tILXI3P8XeSqaEhaJKFVQx2yLILXi9p7BNyiKUBlj03X8AAAAAElFTkSuQmCC" />
+              </a>
 
-                <a class="dropdown-item" 
-                  ><i class="ti ti-eye me-1"></i> Preview</a
-                >
-                <a class="dropdown-item" (click)="closeModal('delete',product.id)"
-                  ><i class="ti ti-trash me-1"></i> Delete</a
-                >
-              </div>
+              <a class="dropdown-item" data-bs-toggle="modal" (click)="showProductDetails(product.id)"
+                data-bs-target="#enableOTPDet">
+                <img
+                  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAhZJREFUSEu11UnIjlEUB/DfJxkixc4QyoIipFgpVjIkIcMCpSSJWMgCGcJKUqaSBaHEQjJGWciwkymSOdkqUoYI99R9835Pz/u83/fWe1fPcM79n3vO//+/Hdq8Otq8v2YAvbEQMzEBI/EX7/EI13EBvxoVWgUwC0fzplUHfY01uFUW1AhgZ6p0R074gHO4isf520TMxWIMy982YX8RpAygtvlXLMPl3JayAntgEU6gLzbgYH1gESCquoTvqeLJKflZF0kwBfcQgNNwt5ZXD9AfLzEYy3GmZPMYcKyyk2/EAbxIgx9fG3x94FocSX19jnEN2lIF0CuzKwqcj4vFSq4hmLMuA3WxO53C9mILjmN1EeBj+jEUo/C2ld0xFXfwMM1yUhHgW2ZCsOFHA4CqFkXKIHzCZwwsAgQtY9ADEM9lqxlA5H7J+fHciQ0x/dGZAU9bBIi2PMhEGVsEOJsothSbsa9FgG3YneZ4Os1xRREguH8KrzAGf7qpg55JP28wHEtwvggQw402RcDKZHInuwmwPttEiDWE9rNMkTNwowWrCFu5n61ieqZqQ8lvxZ7MhjC7KxWaCO+JdoSw+iWKxikOV5ld7d/2xLBd+eVdtutQ+hOEJYSVzMtOOiTbSjjpoWIxVRfOnGR8x7K6q4QdF84q3C4LanZl9klVL8DsPLgRudpgS/D9Zja1340qaAbQoiX9T2s7wD867mgZR73eegAAAABJRU5ErkJggg==" />
+              </a>
+              <a class="dropdown-item" (click)="closeModal('delete',product.id)"><img
+                  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAKRJREFUSEvtlUEKgCAQRV93CYK6TsdpGXSZrlPQaYpAXVjDt8xd7mR03v8z6FQUXlXh/ChAD4xAYwjZgAGYLaEKsACtcLkC3VvA7i5aQlRclkglUPELwF/I7X1wHFsvDvDKpfXIonn+dfO+BsQK1T7wUx2ohNkl+gGXd/W0JH8P5NeUXSJFeAxIGTQx9HbwWC/5HJUTUCvpLm6OTjUyE/Pbx4oDDlBhOBmYaWrOAAAAAElFTkSuQmCC" />
+              </a>
               <!-- Delete Modal -->
               <div id="deleteModal" tabindex="-1" aria-hidden="true" [hidden]="!isDeleteModalOpen"
                 class=" overflow-y-auto overflow-x-hidden fixed top-0 right-0 bottom-0 left-0 z-50 flex justify-center items-center">
@@ -92,7 +89,7 @@
                         class="py-2 px-3 text-sm font-medium text-gray-500 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-primary-300 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
                         No, cancel
                       </button>
-                      <button type="button" (click)="confirmDelete(product.id)" 
+                      <button type="button" (click)="confirmDelete(product.id)"
                         class="py-2 px-3 text-sm font-medium text-center text-white bg-red-600 rounded-lg hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-900">
                         Yes, I'm sure
                       </button>
@@ -100,58 +97,77 @@
                   </div>
                 </div>
               </div>
+
+              <!--detail modal -->
+              <div class="modal fade" id="enableOTPDet" tabindex="-1" aria-hidden="true" *ngIf="selectedProduct">
+                <div class="modal-dialog modal-simple modal-enable-otp modal-dialog-centered max-w-lg max-h-[400px]">
+                  <div class="modal-content" style="max-height: 500px;">
+                    <div class="modal-body flex flex-col justify-center items-center">
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      <img class="items-center rounded-t-lg h-[200px] w-[200px]" [src]="selectedProduct.imageUrl"
+                        alt="product image" />
+                      <div class="px-5 pb-5">
+                        <a href="#" class="block">
+                          <h1 class="text-lg font-semibold tracking-tight text-gray-900 dark:text-white">{{
+                            selectedProduct.name }}</h1>
+                        </a>
+                        <a href="#" class="block">
+                          <h5 class="text-lg font-semibold tracking-tight text-gray-900 dark:text-white">{{
+                            selectedProduct.description }}</h5>
+                        </a>
+                        <div class="flex items-center justify-between pt-[30px]">
+                          <span class="text-3xl font-bold text-gray-900 dark:text-white">{{ selectedProduct.price
+                            }}$</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+
+
             </div>
           </td>
         </tr>
       </tbody>
     </table>
   </div>
-  
-  <div
-    class="offcanvas offcanvas-end"
-    tabindex="-1"
-    id="offcanvasAddUser"
-    aria-labelledby="offcanvasAddUserLabel"
-    [class.show]="isModalOpen"
-  >
+  <!-- Add product -->
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasAddUser" aria-labelledby="offcanvasAddUserLabel"
+    [class.show]="isModalOpen">
     <div class="offcanvas-header">
       <h5 id="offcanvasAddUserLabel" class="offcanvas-title">Add Product</h5>
-      <button
-        type="button"
-        class="btn-close text-reset"
-        (click)="closeModaladd()"
-        aria-label="Close"
-      ></button>
+      <button type="button" class="btn-close text-reset" (click)="closeModaladd()" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body mx-0 flex-grow-0 pt-0 h-100">
-      <form [formGroup]="postProductForm"
-        class="add-new-user pt-0"
-        id="addNewUserForm"
-        onsubmit="return false"
-      >
+      <form [formGroup]="postProductForm" class="add-new-user pt-0" id="addNewUserForm">
         <div class="mb-3">
           <label class="form-label" for="add-user-fullname">Name</label>
-          <input formControlName="name"
-            type="text"
-            class="form-control"
-            id="add-user-fullname"
-            placeholder="Name"
-            name="name"
-            aria-label="name"
-          />
+          <input formControlName="name" type="text" class="form-control" id="add-user-fullname" placeholder="Name"
+            name="name" aria-label="name" />
+          <div *ngIf="postProductForm.get('name')?.invalid && postProductForm.get('name')?.touched" class="text-danger">
+            Name is required.
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="category Name">Category Name</label>
+          <select formControlName="subcategoryId"  class="select2 form-select"(change)="onSubCategoryChange($event)">
+            <option value="" disabled selected>Select Subcategory Name</option>
+            <option *ngFor="let subcategory of subcategories" [value]="subcategory.id">{{ subcategory.name }}</option>
+          </select>
         </div>
         <div class="mb-3">
           <label class="form-label" for="add-user-email">Price</label>
-          <input formControlName="price"
-            type="number"
-            id="price"
-            class="form-control"
-            placeholder="USD"
-            aria-label="price"
-            name="price"
-          />
+          <input formControlName="price" type="number" id="price" class="form-control" placeholder="USD"
+            aria-label="price" name="price" />
+          <div *ngIf="postProductForm.get('price')?.invalid && postProductForm.get('price')?.touched"
+            class="text-danger">
+            price is required.
+          </div>
         </div>
-        
+
         <div class="mb-3">
           <label class="form-label" for="status">Status</label>
           <select formControlName="status" id="status" class="select2 form-select">
@@ -159,209 +175,150 @@
             <option value="AVAILABLE">AVAILABLE</option>
             <option value="UNAVAILABLE">UNAVAILABLE</option>
           </select>
+          <div *ngIf="postProductForm.get('status')?.invalid && postProductForm.get('status')?.touched"
+            class="text-danger">
+            status is required.
+          </div>
         </div>
         <div class="mb-3">
-          <label class="form-label" for="add-user-company"
-            >Time to prepare</label
-          >
-          <input
-            type="text"
-            id="add-user-company"
-            class="form-control"
-            placeholder="Time to prepare"
-            aria-label="Time to prepare"
-            name="time"
-            formControlName="timeToPrepareInMinute"
-          />
+          <label class="form-label" for="add-user-company">Time to prepare</label>
+          <input type="text" id="add-user-company" class="form-control" placeholder="Time to prepare"
+            aria-label="Time to prepare" name="time" formControlName="timeToPrepareInMinute" />
+          <div
+            *ngIf="postProductForm.get('timeToPrepareInMinute')?.invalid && postProductForm.get('timeToPrepareInMinute')?.touched"
+            class="text-danger">
+            timeToPrepareInMinute is required.
+          </div>
         </div>
         <div class="mb-3">
-          <label class="form-label" for="add-user-company">Description</label>
+          <label class="form-label" for="description">Description</label>
           <div class="mt-2">
-            <textarea formControlName="description"
-              id="about"
-              name="about"
-              placeholder="Write Product Description Here"
-              rows="3"
-              class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            ></textarea>
+            <textarea formControlName="description" id="description" name="description"
+              placeholder="Write Product Description Here" rows="3"
+              class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
+            <div *ngIf="postProductForm.get('Description')?.invalid && postProductForm.get('Description')?.touched"
+              class="text-danger">
+              Description is required.
+            </div>
           </div>
         </div>
         <div class="mb-4">
           <span class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Product Images</span>
           <div *ngIf="!imageUrl" class="flex justify-center items-center w-full">
-              <label for="dropzone-file" class="flex flex-col justify-center items-center w-full h-64 bg-gray-50 rounded-lg border-2 border-gray-300 border-dashed cursor-pointer dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-                  <div class="flex flex-col justify-center items-center pt-5 pb-6">
-                      <svg aria-hidden="true" class="mb-3 w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                      </svg>
-                      <p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                          <span  class="font-semibold">Click to upload</span>
-                          or drag and drop
-                      </p>
-                      <p class="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG </p>
-                  </div>
-                  <input formControlName="imageUrl" id="dropzone-file" type="file" class="hidden" (change)="previewImage($event)" >
-              </label>
+            <label for="imageUrl" class="flex flex-col justify-center items-center w-full h-64 bg-gray-50 rounded-lg border-2 border-gray-300 border-dashed cursor-pointer dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+              <div class="flex flex-col justify-center items-center pt-5 pb-6">
+                <svg aria-hidden="true" class="mb-3 w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                </svg>
+                <p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                  <span class="font-semibold">Click to upload</span> or drag and drop
+                </p>
+                <p class="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG</p>
+              </div>
+              <input formControlName="imageUrl" id="imageUrl" type="file" class="hidden" (change)="previewImage($event)">
+            </label>
           </div>
           <div class="mt-4">
-              <img [src]="imageUrl" *ngIf="imageUrl" alt="Uploaded Image" class="max-w-full h-auto">
+            <img [src]="imageUrl" *ngIf="imageUrl" alt="Uploaded Image" class="max-w-full h-auto">
           </div>
-      </div>
-
+          <div *ngIf="postProductForm.get('imageUrl')?.invalid && postProductForm.get('imageUrl')?.touched" class="text-danger">
+            imageUrl is required.
+          </div>
+        </div>
+        
+        
+        
         <button (click)="postProduct()" type="submit" class="btn btn-primary me-sm-3 me-1 data-submit">
           Add new product
         </button>
-        <button
-          type="reset"
-          class="btn btn-label-secondary"
-          data-bs-dismiss="offcanvas"
-        >
+        <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="offcanvas">
           Cancel
         </button>
+        
+        
       </form>
     </div>
   </div>
-
   <!-- edit modal -->
-  <div class="modal fade" id="enableOTP" tabindex="-1" aria-hidden="true">
-    <div
-      class="modal-dialog modal-simple modal-enable-otp modal-dialog-centered"
-    >
+  <div [hidden]="!isEditModalOpen" *ngIf="isEditModalOpen" class="modal fade show" tabindex="-1" style="display: block;"
+    aria-hidden="true">
+    <div class="modal-dialog modal-simple modal-enable-otp modal-dialog-centered">
       <div class="modal-content p-3 p-md-5">
         <div class="modal-body">
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
-
-          <form [formGroup]="postProductForm" 
-            class="add-new-user pt-0"
-            id="addNewUserForm"
-            onsubmit="return false"
-          >
-          <div class="mb-3">
-            <label class="form-label" for="add-user-fullname">Product ID</label>
-            <input formControlName="id"
-              type="text"
-              class="form-control"
-              id="add-user-fullname"
-              placeholder="id"
-              name="id"
-              aria-label="id"
-            />
-          </div>
-          <div class="mb-3">
-            <label class="form-label" for="add-user-fullname">Name</label>
-            <input formControlName="name"
-              type="text"
-              class="form-control"
-              id="add-user-fullname"
-              placeholder="Name"
-              name="name"
-              aria-label="name"
-            />
-          </div>
-          <div class="mb-3">
-            <label class="form-label" for="add-user-email">Price</label>
-            <input formControlName="price"
-              type="number"
-              id="price"
-              class="form-control"
-              placeholder="USD"
-              aria-label="price"
-              name="price"
-            />
-          </div>
-        
-          <div class="mb-3">
-            <label class="form-label" for="country">Status</label>
-            <select formControlName="status" id="country" class="select2 form-select">
-              <option value="">Select</option>
-              <option value="AVAILABLE">AVAILABLE</option>
-              <option value="UNAVAILABLE">UNAVAILABLE</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label class="form-label" for="add-user-company"
-              >Time to prepare</label
-            >
-            <input
-              type="text"
-              id="add-user-company"
-              class="form-control"
-              placeholder="Time to prepare"
-              aria-label="Time to prepare"
-              name="time"
-              formControlName="timeToPrepareInMinute"
-            />
-          </div>
-          <div class="mb-3">
-            <label class="form-label" for="add-user-company">Description</label>
-            <div class="mt-2">
-              <textarea formControlName="description"
-                id="about"
-                name="about"
-                placeholder="Write Product Description Here"
-                rows="3"
-                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              ></textarea>
+          <button (click)="closeModal('edit', selectedCategoryid!)" type="button" class="btn-close"></button>
+          <form [formGroup]="updateProductForm" (ngSubmit)="confirmUpdate(updateProductForm, selectedCategoryid!)"
+            class="add-new-user pt-0" id="addNewUserForm">
+            <div class="mb-3">
+              <label class="form-label" for="add-user-fullname">Name</label>
+              <input formControlName="name" type="text" class="form-control" id="add-user-fullname" placeholder="Name"
+                name="name" aria-label="name" />
             </div>
-          </div>
-          <div class="col-span-full mb-3">
-            <label
-              for="cover-photo"
-              class="block text-sm font-medium leading-6 text-gray-900"
-              >Product Image</label
-            >
-            <div
-              class="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10"
-            >
-              <div class="text-center">
-                <svg
-                  class="mx-auto h-12 w-12 text-gray-300"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  aria-hidden="true"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M1.5 6a2.25 2.25 0 012.25-2.25h16.5A2.25 2.25 0 0122.5 6v12a2.25 2.25 0 01-2.25 2.25H3.75A2.25 2.25 0 011.5 18V6zM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0021 18v-1.94l-2.69-2.689a1.5 1.5 0 00-2.12 0l-.88.879.97.97a.75.75 0 11-1.06 1.06l-5.16-5.159a1.5 1.5 0 00-2.12 0L3 16.061zm10.125-7.81a1.125 1.125 0 112.25 0 1.125 1.125 0 01-2.25 0z"
-                    clip-rule="evenodd"
-                  />
-                </svg>
-                <div class="mt-4 flex text-sm leading-6 text-gray-600">
-                  <label
-                    for="file-upload"
-                    class="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
-                  >
-                    <span>Upload a file</span>
-                    <input
-                      id="file-upload"
-                      name="file-upload"
-                      type="file"
-                      class="sr-only"
-                      formControlName="imageUrl"
-                    />
-                  </label>
-                  <p class="pl-1">or drag and drop</p>
-                </div>
+            <div class="mb-3">
+              <label class="form-label" for="category Name">Category Name</label>
+              <select formControlName="subcategoryId"  class="select2 form-select"(change)="onSubCategoryChange($event)">
+                <option value="" disabled selected>Select Subcategory Name</option>
+                <option *ngFor="let subcategory of subcategories" [value]="subcategory.id">{{ subcategory.name }}</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="add-user-email">Price</label>
+              <input formControlName="price" type="number" id="price" class="form-control" placeholder="USD"
+                aria-label="price" name="price" />
+              
+            </div>
+    
+            <div class="mb-3">
+              <label class="form-label" for="status">Status</label>
+            
+              <select  formControlName="status" id="status" class="select2 form-select">
+                <option value="">Select</option>
+                <option value="AVAILABLE">AVAILABLE</option>
+                <option value="UNAVAILABLE">UNAVAILABLE</option>
+              </select>
+             
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="add-user-company">Time to prepare</label>
+              <input type="text" id="add-user-company" class="form-control" placeholder="Time to prepare"
+                aria-label="Time to prepare" name="time" formControlName="timeToPrepareInMinute" />
+              
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="description">Description</label>
+              <div class="mt-2">
+                <textarea formControlName="description" id="description" name="description"
+                  placeholder="Write Product Description Here" rows="3"
+                  class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
+                
               </div>
             </div>
-          </div>
+            <div class="mb-4">
+              <span class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Product Images</span>
+              <div *ngIf="!imageUrl" class="flex justify-center items-center w-full">
+                <label for="imageUrl" class="flex flex-col justify-center items-center w-full h-64 bg-gray-50 rounded-lg border-2 border-gray-300 border-dashed cursor-pointer dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                  <div class="flex flex-col justify-center items-center pt-5 pb-6">
+                    <svg aria-hidden="true" class="mb-3 w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    </svg>
+                    <p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                      <span class="font-semibold">Click to upload</span> or drag and drop
+                    </p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG</p>
+                  </div>
+                  <input formControlName="imageUrl" id="imageUrl" type="file" class="hidden" (change)="previewImage($event)">
+                </label>
+              </div>
+              <div class="mt-4">
+                <img [src]="imageUrl" *ngIf="imageUrl" alt="Uploaded Image" class="max-w-full h-auto">
+              </div>
+              
+            </div>
 
-            <button
-              type="submit"
-              class="btn btn-primary me-sm-3 me-1 data-submit"
-            >
+            <button type="submit" class="btn btn-primary me-sm-3 me-1 data-submit">
               Save
             </button>
-            <button
-              type="reset"
-              class="btn btn-label-secondary"
-              data-bs-dismiss="offcanvas"
-            >
+            <button type="button" (click)="closeModal('edit', selectedCategoryid!)" class="btn btn-label-secondary"
+              data-bs-dismiss="offcanvas">
               Cancel
             </button>
           </form>
@@ -369,5 +326,5 @@
       </div>
     </div>
   </div>
-  
+
 </div>

@@ -29,6 +29,7 @@ import { DashHomeComponent } from './dash-home/dash-home.component'
 import { environment } from './environment/environment';
 import { LoginComponent } from './auth/login/login.component';
 import { TokenInterceptorService } from './auth/token-interceptor.service';
+import { DetailOrderComponent } from './order/DeatilOrder/detail-order/detail-order.component';
 registerLocaleData(en);
 
 @NgModule({
@@ -41,7 +42,8 @@ registerLocaleData(en);
     CategoryComponent,
     SubcategoryComponent,
     DashHomeComponent,
-    LoginComponent
+    LoginComponent,
+    DetailOrderComponent
   ],
   imports: [
     BrowserModule,

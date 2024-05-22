@@ -1,0 +1,5 @@
+ <option class="text-green-700" value="Completed">Completed</option>
+              <option value="Processing">Processing</option>
+              <option value="PENDING">PENDING</option>
+              <option value="SHIPPED">SHIPPED</option>
+              <option class="text-red-700" value="CANCELLED">CANCELLED</option>

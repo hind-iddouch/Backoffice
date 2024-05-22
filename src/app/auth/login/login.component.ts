@@ -32,7 +32,7 @@ export class LoginComponent {
         localStorage.setItem('token', response.accessToken);
         localStorage.setItem('role', response.role);
 
-        this.router.navigate(['/dashhome']).then(success => {
+        this.router.navigate(['/dash-home']).then(success => {
           if (success) {
             console.log('Navigation to dashboard successful!');
           } else {

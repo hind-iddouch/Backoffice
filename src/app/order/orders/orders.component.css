@@ -15,4 +15,6 @@ h1 {
   span[nz-icon][nzType="delete"] {
     color: red; 
   }
-  
+  .select-gray {
+    background-color: rgb(230, 229, 229);
+  }

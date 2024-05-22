@@ -46,7 +46,13 @@ export class SubcategoryComponent implements OnInit {
     this.getAllSubcategories();
     this.getAllCategories();
   }
-
+  closeModalCate() {
+    this.isAddModalOpen = false; // Set isAddModalOpen to false to close the modal
+    this.postSubCategoryForm = this.fb.group({
+      id: [null],
+      name: [null]
+    });
+  }
 
 closeModaladd(str: string) {
     // Get the modal element
@@ -67,8 +73,15 @@ closeModaladd(str: string) {
       this.closeModaladd('add');
     }
     )
+    this.postSubCategoryForm = this.fb.group({
+      id: [null],
+      name: [null]
+    });
   }
 
+  openAddCategoryModal() {
+    this.isAddModalOpen = true;
+  }
 
   getAllSubcategories() {
     this.subcategoryService.getAllSubcategories().subscribe((res) => {
@@ -119,16 +132,20 @@ closeModaladd(str: string) {
                   this.isAddModalOpen = !this.isAddModalOpen;
                   break;
 
-      case 'edit': 
-      console.log(str, id)
-                  this.isEditModalOpen = !this.isEditModalOpen;
-                  console.log(this.isEditModalOpen);
-
-                  this.selectedCategoryid = id;
-                  console.log(this.selectedCategoryid);
-
-
-                break;
+                  case 'edit':
+        console.log(str, id);
+        this.isEditModalOpen = !this.isEditModalOpen;
+        this.selectedCategoryid = id;
+        this.currentSubCategory = this.subcategories.find(sub => sub.id === id) || null;
+        if (this.currentSubCategory) {
+          this.updateSubCategoryForm.patchValue({
+            id: this.currentSubCategory.id,
+            name: this.currentSubCategory.name,
+            categoryId: this.currentSubCategory.categoryId,
+          });
+        }
+        console.log(this.updateSubCategoryForm.value);
+        break;
       case 'delete':
                   this.isDeleteModalOpen = !this.isDeleteModalOpen;
                   console.log("toggle confirm delete called");
