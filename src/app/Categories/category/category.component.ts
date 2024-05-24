@@ -15,6 +15,17 @@ export class CategoryComponent implements OnInit {
   postCategoryForm!: FormGroup;
   updateCategoryForm!: FormGroup;
   categories: Category[] = [];
+  showSuccessDeleteAlert: boolean = false;
+  showErrorDeleteAlert: boolean = false;
+  showSuccessUpdateAlert: boolean = false;
+  showErrorUpdateAlert: boolean = false;
+  //pagination
+ page = 0;
+ pageSize = 5; 
+ totalItems = 0;
+ paginatedCategory: Category[] = [];
+ currentPage: number = 1;
+ itemsPerPage: number = 5;
   // Add a property to hold the current category being updated
   currentCategory: Category | null = null;
   openAddCategoryModal() {
@@ -51,6 +62,7 @@ export class CategoryComponent implements OnInit {
     this.categoryService.getAllCategories().subscribe((res) => {
       console.log(res);
       this.categories = res;
+      this.updatePaginatedProducts();
     });
   }
 
@@ -134,14 +146,21 @@ export class CategoryComponent implements OnInit {
 
   this.categoryService.updateCategories(id, editForm.value).subscribe({
     next: () => {
-      // Update successful, reset selected field and hide modal
       this.selectedCategoryid = 0;
       this.getAllCategories();
-      this.closeModal('edit', id); // Close modal after update
+      this.closeModal('edit', id); 
+      this.showSuccessUpdateAlert = true;
+      setTimeout(() => {
+        this.showSuccessUpdateAlert = false;
+      }, 2500);
     },
     error: (error) => {
       // Handle error if update fails
       console.error('Error updating field:', error);
+      this.showErrorUpdateAlert = true;
+      setTimeout(() => {
+        this.showErrorUpdateAlert = false;
+      }, 2500);
     }
   });
 }
@@ -212,6 +231,10 @@ export class CategoryComponent implements OnInit {
         this.getAllCategories();
         this.closeModal('delete', id);
         console.log('Category deleted successfully');
+        this.showSuccessDeleteAlert = true;
+        setTimeout(() => {
+          this.showSuccessDeleteAlert = false;
+        }, 2500);
       },
       error: (error) => {
         // Handle error if deletion fails
@@ -237,7 +260,43 @@ export class CategoryComponent implements OnInit {
   closeDeleteAlert() {
     this.deleteAlert = !this.deleteAlert;
   }
-
+  loadProductsWithPagiantion() {
+    this.categoryService.getAllCategories().subscribe(data => {
+      this.categories = data;
+  
+      //this.loadProductsWithPagiantion();
+      console.log("products loaded ",this.categories);
+      this.updatePaginatedProducts();
+  
+    })
+  }
+  onPageChange(): void {
+    // Réagissez au changement de page
+    this.updatePaginatedProducts();
+  }
+  
+  updatePaginatedProducts() {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    this.paginatedCategory = this.categories.slice(startIndex, endIndex);
+  }
+  goToPage(page: number, event?: MouseEvent): void {
+    if (event) {
+      event.preventDefault();
+    }
+    if (page < 1 || page > this.totalPages) return;
+    this.currentPage = page;
+    this.updatePaginatedProducts();
+  }
+  
+  get totalPages(): number {
+    return Math.ceil(this.categories.length / this.itemsPerPage);
+  }
+  
+  getPaginationArray(): number[] {
+    const totalPages = this.totalPages;
+    return Array.from({ length: totalPages }, (_, i) => i + 1);
+  }
   
 
 }

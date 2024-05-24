@@ -16,4 +16,90 @@ h1 {
   span[nz-icon][nzType="delete"] {
     color: red; 
   }
-  
+  .pagination {
+  margin: 20px 0;
+}
+
+.pagination .page-item.disabled .page-link {
+  color: #6c757d;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+.pagination .page-item.active .page-link {
+  z-index: 1;
+  color: #fff;
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.pagination .page-link {
+  position: relative;
+  display: block;
+  color: #007bff;
+  text-decoration: none;
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  margin: 0 2px;
+}
+
+.pagination .page-link:hover {
+  z-index: 2;
+  color: #0056b3;
+  background-color: #e9ecef;
+  border-color: #dee2e6;
+}
+
+.pagination .page-link:focus {
+  z-index: 2;
+  color: #0056b3;
+  background-color: #e9ecef;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+
+/* pagination */
+.pagination {
+  margin: 20px 0;
+  justify-content: flex-end; /* Aligns the pagination to the right */
+}
+
+.pagination .page-item.disabled .page-link {
+  color: #6c757d;
+  pointer-events: none;
+  cursor: not-allowed;
+  background-color: #f8f9fa; /* Light background for disabled state */
+}
+
+.pagination .page-item.active .page-link {
+  z-index: 1;
+  color: #fff;
+  background-color: #053d75; /* Dark blue background for active state */
+  border-color: #003366; /* Dark blue border for active state */
+}
+
+.pagination .page-link {
+  position: relative;
+  display: block;
+  color: #003366; /* Dark blue text color */
+  text-decoration: none;
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  margin: 0 2px;
+}
+
+.pagination .page-link:hover {
+  z-index: 2;
+  color: #fff;
+  background-color: #0056b3; /* Slightly lighter dark blue for hover state */
+  border-color: #0056b3;
+}
+
+.pagination .page-link:focus {
+  z-index: 2;
+  color: #fff;
+  background-color: #0056b3;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}

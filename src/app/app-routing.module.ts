@@ -15,7 +15,7 @@ import { DetailOrderComponent } from './order/DeatilOrder/detail-order/detail-or
 const routes: Routes = [
   {path:'', redirectTo:'/login',pathMatch:'full'},
     {path:'login', component:LoginComponent},
-    //{ path: 'dashhome', component: DashboardComponent },
+    { path: 'dashhome', component: DashboardComponent },
     { path: 'dash-home', component:  DashHomeComponent},
     { path: 'products', component: ProductsComponent },
     { path: 'Customers', component: CustomersComponent },

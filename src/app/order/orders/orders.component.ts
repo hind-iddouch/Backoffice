@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { OrderService } from '../order.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Order, OrderResponse } from 'src/app/Module/Order';
+import { Order } from 'src/app/Module/Order';
 
 @Component({
   selector: 'app-orders',
@@ -17,6 +17,17 @@ export class OrdersComponent implements OnInit{
   id: number=this.activatedRoute.snapshot.params["id"];
   selectedStatus: string = '';
   orderStatuses: string[] = ['Completed', 'Processing', 'PENDING', 'SHIPPED', 'CANCELLED'];
+ //pagination
+ page = 0;
+ pageSize = 5; 
+ totalItems = 0;
+ paginatedOrders: Order[] = [];
+ currentPage: number = 1;
+ itemsPerPage: number = 5;
+
+ showErrorUpdateAlert: boolean = false;
+  showSuccessUpdateAlert: boolean = false;
+
   constructor(private orderService: OrderService, private fb: FormBuilder, private activatedRoute: ActivatedRoute) { }
 
   ngOnInit() {
@@ -58,6 +69,7 @@ export class OrdersComponent implements OnInit{
     this.orderService.getAllOrders().subscribe((res) => {
       console.log(res);
       this.orders = res;
+      this.updatePaginatedProducts();
     });
   }
 
@@ -84,41 +96,74 @@ export class OrdersComponent implements OnInit{
     this.isModalOpen = false;
   }
 
-  toggleModalDelete() {
-    const modalDelete = document.getElementById('deleteModal');
-    if (modalDelete) {
-      modalDelete.classList.toggle('hidden');
-    }
-  }
-
-  closeModalDelete() {
-    // Get the modal element
-    const modalDelete = document.getElementById('deleteModal');
   
-    // Check if modal exists before performing operations
-    modalDelete?.classList.add('hidden');
-    modalDelete?.setAttribute('aria-hidden', 'true');
-  }
 
   updateOrderStatus(orderId: number, newStatus: string) {
-    const orderToUpdate = this.orders.find((order: any) => order.orderId === orderId);
+    const orderToUpdate = this.orders.find((order: any) => order.orderResponse.orderId === orderId);
     if (orderToUpdate) {
       console.log('New status for order', orderId, ':', newStatus);
       this.orderService.updateOrderStatus(orderId, newStatus)
         .subscribe(
           updatedOrder => {
             console.log('Order status updated successfully:', updatedOrder);
-            const index = this.orders.findIndex((order: any) => order.orderId === orderId);
+            const index = this.orders.findIndex((order: any) => order.orderResponse.orderId === orderId);
             if (index !== -1) {
               this.orders[index] = updatedOrder;
               this.getAllOrders();
+              this.showSuccessUpdateAlert = true;
+        setTimeout(() => {
+          this.showSuccessUpdateAlert = false;
+        }, 2500);
             }
+            
           },
           error => {
             console.error('Error updating order status:', error);
+            this.showErrorUpdateAlert = true;
+          setTimeout(() => {
+            this.showErrorUpdateAlert = false;
+          }, 2500);
           }
         );
     }
+  }
+
+  loadProductsWithPagiantion() {
+    this.orderService.getAllOrders().subscribe(data => {
+      this.orders = data;
+  
+      //this.loadProductsWithPagiantion();
+      console.log("products loaded ",this.orders);
+      this.updatePaginatedProducts();
+  
+    })
+  }
+  onPageChange(): void {
+    // Réagissez au changement de page
+    this.updatePaginatedProducts();
+  }
+  
+  updatePaginatedProducts() {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    this.paginatedOrders = this.orders.slice(startIndex, endIndex);
+  }
+  goToPage(page: number, event?: MouseEvent): void {
+    if (event) {
+      event.preventDefault();
+    }
+    if (page < 1 || page > this.totalPages) return;
+    this.currentPage = page;
+    this.updatePaginatedProducts();
+  }
+  
+  get totalPages(): number {
+    return Math.ceil(this.orders.length / this.itemsPerPage);
+  }
+  
+  getPaginationArray(): number[] {
+    const totalPages = this.totalPages;
+    return Array.from({ length: totalPages }, (_, i) => i + 1);
   }
   
 

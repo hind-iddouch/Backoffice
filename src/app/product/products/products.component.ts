@@ -14,6 +14,7 @@ import { Product } from 'src/app/Module/Product';
 export class ProductsComponent implements OnInit {
 
   showForm: boolean = false;
+  selectedProductId:number = 0;
  //products: any = [];
   nom: string = "";
   imageUrl: string="" ;
@@ -26,7 +27,17 @@ export class ProductsComponent implements OnInit {
   currentProduct: Product | null = null;
   products: Product[] = [];
   selectedSubCategoryId: number | undefined; // Ajoutez cette variable pour stocker l'ID de la catégorie sélectionnée
-   
+  showSuccessDeleteAlert: boolean = false;
+  showErrorDeleteAlert: boolean = false;
+  showSuccessUpdateAlert: boolean = false;
+  showErrorUpdateAlert: boolean = false;
+  //pagination
+  page = 0;
+  pageSize = 5; 
+  totalItems = 0;
+  paginatedProducts: Product[] = [];
+  currentPage: number = 1;
+  itemsPerPage: number = 5;
 
   file: File | null = null;
  
@@ -101,10 +112,7 @@ export class ProductsComponent implements OnInit {
     this.getAllProducts();
     this.getAllSubcategories();
 
-    /* this.activatedRoute.params.subscribe(params => {
-      this.id = params['id']; // Récupérez l'ID dans ngOnInit
-      // Vous pouvez également exécuter d'autres actions dépendant de l'ID ici
-    }); */
+   
   }
 
   getProductById(id: number) {
@@ -124,6 +132,7 @@ export class ProductsComponent implements OnInit {
   }
 
   showProductDetails(id: number) {
+    
     this.getProductById(id);
     // Optionally, you could add some code here to handle showing the modal
     // if not using data-bs-toggle and data-bs-target attributes in HTML.
@@ -134,6 +143,7 @@ export class ProductsComponent implements OnInit {
     this.productService.getAllProducts().subscribe((res) => {
       console.log(res);
       this.products = res;
+      this.updatePaginatedProducts();
     });
   }
   getAllSubcategories() {
@@ -160,6 +170,7 @@ export class ProductsComponent implements OnInit {
          
           this.getAllProducts();
           this.closeModalCate();
+          this.loadProductsWithPagiantion();
         },
         error => {
           console.error('Error adding product', error);
@@ -233,16 +244,7 @@ export class ProductsComponent implements OnInit {
       case 'details':
         this.isDetailsModalOpen = !this.isDetailsModalOpen;
         console.log("toggle details called");
-        this.selectedCategoryid = id;
-        break;
-
-      case 'cancel':
-        this.selectedCategoryid = 0;
-        this.isDeleteModalOpen = false;
-        break;
-
-      case 'alert':
-        this.deleteAlert = !this.deleteAlert;
+        this.selectedProductId = id;
         break;
     };
 
@@ -265,11 +267,18 @@ export class ProductsComponent implements OnInit {
         this.selectedCategoryid = 0;
         this.getAllProducts();
         this.closeModal('delete', id);
-        console.log('Category deleted successfully');
+        this.showSuccessDeleteAlert = true;
+        setTimeout(() => {
+          this.showSuccessDeleteAlert = false;
+        }, 2500);
       },
       error: (error) => {
         // Handle error if deletion fails
         console.error('Error deleting field:', error);
+        this.showErrorDeleteAlert = false;
+        setTimeout(() => {
+          this.showErrorDeleteAlert = false;
+        }, 2500);
       }
     });
 
@@ -314,14 +323,60 @@ export class ProductsComponent implements OnInit {
      
       this.getAllProducts();
       this.closeModal('edit', id); // Close modal after update
+      this.showSuccessUpdateAlert = true;
+      setTimeout(() => {
+        this.showSuccessUpdateAlert = false;
+      }, 2500);
     },
     error: (error) => {
       // Handle error if update fails
       console.error('Error updating field:', error);
+      this.showErrorUpdateAlert = true;
+          setTimeout(() => {
+            this.showErrorUpdateAlert = false;
+          }, 2500);
+    
     }
   });
 }
 
+loadProductsWithPagiantion() {
+  this.productService.getAllProducts().subscribe(data => {
+    this.products = data;
+
+    //this.loadProductsWithPagiantion();
+    console.log("products loaded ",this.products);
+    this.updatePaginatedProducts();
+
+  })
+}
+onPageChange(): void {
+  // Réagissez au changement de page
+  this.updatePaginatedProducts();
+}
+
+updatePaginatedProducts() {
+  const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+  const endIndex = startIndex + this.itemsPerPage;
+  this.paginatedProducts = this.products.slice(startIndex, endIndex);
+}
+goToPage(page: number, event?: MouseEvent): void {
+  if (event) {
+    event.preventDefault();
+  }
+  if (page < 1 || page > this.totalPages) return;
+  this.currentPage = page;
+  this.updatePaginatedProducts();
+}
+
+get totalPages(): number {
+  return Math.ceil(this.products.length / this.itemsPerPage);
+}
+
+getPaginationArray(): number[] {
+  const totalPages = this.totalPages;
+  return Array.from({ length: totalPages }, (_, i) => i + 1);
+}
 
 
 

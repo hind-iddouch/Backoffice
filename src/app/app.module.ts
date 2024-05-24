@@ -28,8 +28,10 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { DashHomeComponent } from './dash-home/dash-home.component'
 import { environment } from './environment/environment';
 import { LoginComponent } from './auth/login/login.component';
-import { TokenInterceptorService } from './auth/token-interceptor.service';
 import { DetailOrderComponent } from './order/DeatilOrder/detail-order/detail-order.component';
+import { AuthInterceptor } from './auth/auth-interceptor.interceptor.spec';
+
+
 registerLocaleData(en);
 
 @NgModule({
@@ -43,7 +45,9 @@ registerLocaleData(en);
     SubcategoryComponent,
     DashHomeComponent,
     LoginComponent,
-    DetailOrderComponent
+    DetailOrderComponent,
+    
+    
   ],
   imports: [
     BrowserModule,
@@ -63,7 +67,7 @@ registerLocaleData(en);
     NzPopconfirmModule
   ],
   providers: [{
-    provide:HTTP_INTERCEPTORS, useClass:TokenInterceptorService, multi:true,
+    provide:HTTP_INTERCEPTORS, useClass:AuthInterceptor, multi:true,
 }],
   bootstrap: [AppComponent]
 })

@@ -18,10 +18,10 @@ export class DashboardComponent {
   toggleCollapsed(): void {
     this.isCollapsed = !this.isCollapsed;
   }
-  logout() {
+  /* logout() {
     localStorage.clear();
     this.router.navigate(['login'])
-  }
+  } */
 
   isMenuOpen: boolean = true;
 
@@ -29,10 +29,16 @@ export class DashboardComponent {
     this.isMenuOpen = !this.isMenuOpen;
   }
 
-  isLoggedIn() {
-    return window.localStorage.getItem('token') !== null;
+    isLoggedIn() {
+    return window.localStorage.getItem('accessToken') !== null;
+  }  
+  logout() {
+    // Clear user information from local storage
+    localStorage.removeItem('UserInfo');
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    this.router.navigate(['login'])
   }
-  
 
   
 }

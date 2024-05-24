@@ -20,6 +20,17 @@ export class SubcategoryComponent implements OnInit {
   categories: Category[] = [];
   // Add a property to hold the current category being updated
   currentSubCategory: Subcategory | null = null;
+  //pagination
+ page = 0;
+ pageSize = 5; 
+ totalItems = 0;
+ paginatedSubcategory: Subcategory[] = [];
+ currentPage: number = 1;
+ itemsPerPage: number = 5;
+ showSuccessDeleteAlert: boolean = false;
+  showErrorDeleteAlert: boolean = false;
+  showSuccessUpdateAlert: boolean = false;
+  showErrorUpdateAlert: boolean = false;
 
 
 
@@ -87,6 +98,7 @@ closeModaladd(str: string) {
     this.subcategoryService.getAllSubcategories().subscribe((res) => {
       console.log(res);
       this.subcategories = res;
+      this.updatePaginatedProducts();
     });
   }
 
@@ -94,6 +106,7 @@ closeModaladd(str: string) {
     this.categoryService.getAllCategories().subscribe((res) => {
       console.log(res);
       this.categories = res;
+      
     });
   }
 
@@ -105,12 +118,7 @@ closeModaladd(str: string) {
     this.isModalOpen = !this.isModalOpen;
   }
 
- /* toggleModalDelete() {
-    const modalDelete = document.getElementById('deleteModal');
-    if (modalDelete) {
-      modalDelete.classList.toggle('hidden');
-    }
-  }*/
+
 
   //Add Modal Attrribute
   isAddModalOpen: boolean = false;
@@ -192,10 +200,18 @@ closeModaladd(str: string) {
         this.selectedCategoryid = 0;
         this.getAllSubcategories();
         this.closeModal('edit', id); // Close modal after update
+        this.showSuccessUpdateAlert = true;
+        setTimeout(() => {
+          this.showSuccessUpdateAlert = false;
+        }, 2500);
       },
       error: (error) => {
         // Handle error if update fails
         console.error('Error updating field:', error);
+        this.showErrorUpdateAlert = true;
+          setTimeout(() => {
+            this.showErrorUpdateAlert = false;
+          }, 2500);
       }
     });
   }
@@ -223,10 +239,18 @@ closeModaladd(str: string) {
         this.getAllSubcategories();
         this.closeModal('delete', id);
         console.log('Category deleted successfully');
+        this.showSuccessDeleteAlert = true;
+        setTimeout(() => {
+          this.showSuccessDeleteAlert = false;
+        }, 2500);
       },
       error: (error) => {
         // Handle error if deletion fails
         console.error('Error deleting field:', error);
+        this.showErrorDeleteAlert = false;
+        setTimeout(() => {
+          this.showErrorDeleteAlert = false;
+        }, 2500);
       }
     });
 
@@ -244,5 +268,42 @@ closeModaladd(str: string) {
     this.selectedCategoryid = 0;
     this.isConfirmDelete = !this.isConfirmDelete;
   }
-
+  loadProductsWithPagiantion() {
+    this.subcategoryService.getAllSubcategories().subscribe(data => {
+      this.subcategories = data;
+  
+      //this.loadProductsWithPagiantion();
+      console.log("products loaded ",this.subcategories);
+      this.updatePaginatedProducts();
+  
+    })
+  }
+  onPageChange(): void {
+    // Réagissez au changement de page
+    this.updatePaginatedProducts();
+  }
+  
+  updatePaginatedProducts() {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    this.paginatedSubcategory = this.subcategories.slice(startIndex, endIndex);
+  }
+  goToPage(page: number, event?: MouseEvent): void {
+    if (event) {
+      event.preventDefault();
+    }
+    if (page < 1 || page > this.totalPages) return;
+    this.currentPage = page;
+    this.updatePaginatedProducts();
+  }
+  
+  get totalPages(): number {
+    return Math.ceil(this.categories.length / this.itemsPerPage);
+  }
+  
+  getPaginationArray(): number[] {
+    const totalPages = this.totalPages;
+    return Array.from({ length: totalPages }, (_, i) => i + 1);
+  }
+  
 }

@@ -1,5 +1,41 @@
+<h1 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-6">Subcategories</h1>
 <div class="card">
-  <h1 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Subcategories</h1>
+  <div *ngIf="showErrorDeleteAlert" id="alert-border-2" class="fixed z-10 bottom-4 right-4 flex items-center p-4 mb-4 text-red-800 border-t-4 border-red-300 bg-red-50 dark:text-red-400 dark:bg-gray-800 dark:border-red-800" role="alert">
+    <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+      <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+    </svg>
+    <div class="ms-3 text-sm font-medium">
+      Error deleting Category. Please try again later. 
+    </div>
+  </div>
+  <div *ngIf="showErrorUpdateAlert" id="alert-border-2" class="fixed z-10 bottom-4 right-4 flex items-center p-4 mb-4 text-red-800 border-t-4 border-red-300 bg-red-50 dark:text-red-400 dark:bg-gray-800 dark:border-red-800" role="alert">
+    <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+      <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+    </svg>
+    <div class="ms-3 text-sm font-medium">
+      Error updating Category. Please try again later. 
+    </div>
+  </div>
+  
+  
+  <div *ngIf="showSuccessDeleteAlert" id="alert-border-1" class="fixed z-10 bottom-4 right-4 flex items-center p-4 mb-4 text-blue-800 border-t-4 border-blue-300 bg-blue-50 dark:text-blue-400 dark:bg-gray-800 dark:border-blue-800" role="alert">
+    <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+      <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+    </svg>
+    <div class="ms-3 text-sm font-medium">
+      Category deleted successfully!
+    </div>
+    </div>
+  
+    <div *ngIf="showSuccessUpdateAlert"id="alert-border-1" class="fixed z-10 bottom-4 right-4 flex items-center p-4 mb-4 text-blue-800 border-t-4 border-blue-300 bg-blue-50 dark:text-blue-400 dark:bg-gray-800 dark:border-blue-800" role="alert">
+      <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+      </svg>
+      <div class="ms-3 text-sm font-medium">
+        Category updated successfully!
+      </div>
+      </div>
+  
   <div class="table-responsive text-nowrap">
     <button (click)="openAddCategoryModal()"
       class="px-4 py-2 mb-2 bg-blue-800 hover:bg-blue-600 text-white rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 float-right">
@@ -17,7 +53,7 @@
         </tr>
       </thead>
       <tbody class="table-border-bottom-0">
-        <tr *ngFor="let subcategory of subcategories">
+        <tr *ngFor="let subcategory of paginatedSubcategory">
           <td>{{subcategory.id }}</td>
           <td>
             <strong>{{ subcategory.name }}</strong>
@@ -28,12 +64,12 @@
           <td>
             <div class="dropdown flex flex-row">
               <button (click)="closeModal('edit', subcategory.id)" class="dropdown-item" style="width: 80px;">
-                <img
-                  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAWdJREFUSEvFlLlKRDEUhr9pLOwEcQoFwUJRcasVt9Z3EsX38QnGfXkDC/cFRRQLtXCpND+cyJ0xud7ccZg0uWSG7zv5c5IKLR6VFvNpRtABLAGdwDrwHiq2rKAL2AQmDXoJzAM3jZIyAsG3gAngHngFhux7CnjISlIF3cCGi2QcOAMWgQ+gZmurDr5SVtDjYtgGhg1wbrF8mnQMWAOWywiqFovgj8AzMAjcAm/2rXVJNP+MIhEJfggMAHfucGeBFxfPLjBiJL9+kXrIjfBp4BrIdpHgfv1Xp+btoNeq9JVn4XvAqMnmbA7e2ZhA8AOg32KJwbWuHURHSCDozn/AZQ0JrgyuWbdTmav/dXPVJaeugIW/KvdbCgm+7Mc+gwiu/lfmJ9ZFdbc1NSIvkFzwfXsKjt1d0IEWhsci8oJsYYLPAE+pz3teRJ51ZGeRDI/tILXI3P8XeSqaEhaJKFVQx2yLILXi9p7BNyiKUBlj03X8AAAAAElFTkSuQmCC" />
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAe5JREFUSEu1lM1OU0EUx//ndk4DVSMNpiwwIXGhUVKRNYRWtuxZuLBq9DWMxsfQhZjowoVPIIIf+AYsyoe0BEJstAU13jpzvWNmLjWl3NJOtbOazJ37+52Zc+YQ+jyoz3z8g+BlMjnkz4F0Sp5KvcLOvB8XbG+Cs8/T7Kk3AK4dQrcSoHy9VthulbgLLDxYAvQEAXsa9A3Ql8xcsppE5d7nZomb4MyLcyzkIoCrADYEhbO+RJ3Ze23WiPRDWb39oDfB6WcZ5nAZwOVDwKYgkfel/MXsGWmWiB7JauG+uyDzeIQVL1k4oYIQ+yBc1MAOafw0c7OupJfFj5sVN0EE/wjgggZ2RRjO1MPEAQv9DsAVA/u7fnDnk1uSW+E6mKrv3y2jqYosvLEeU6dtkzw4vDAahDbKKPKj8PcAxgEqJ7TKWWmbESuI4FgB9NhJcOFhyv9a2D2pGxwTDAw9GftN/PZ/wI34mIDTCyUDB1BK6CBvjx/Vv3m5WRDWBdH1TpE3ThUjeKrNR+HReQuJ4Kb+x6GxppJqpvW1Ol0RpyOBqt2iCK4+mFYAUFGxzLnA21xRJDg6qKgCnsb3G19c23vbK2oCraogme8FHnsC1wg77Xfrpp1o3bzkRpJ7YNlfbHE0jW5y4OTqKHCidbG57zn4A+mk5RkHGOGJAAAAAElFTkSuQmCC"/>
               </button>
 
-              <a class="dropdown-item" (click)="closeModal('delete',subcategory.id)"><img
-                  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAKRJREFUSEvtlUEKgCAQRV93CYK6TsdpGXSZrlPQaYpAXVjDt8xd7mR03v8z6FQUXlXh/ChAD4xAYwjZgAGYLaEKsACtcLkC3VvA7i5aQlRclkglUPELwF/I7X1wHFsvDvDKpfXIonn+dfO+BsQK1T7wUx2ohNkl+gGXd/W0JH8P5NeUXSJFeAxIGTQx9HbwWC/5HJUTUCvpLm6OTjUyE/Pbx4oDDlBhOBmYaWrOAAAAAElFTkSuQmCC" /></a>
+              <a class="dropdown-item" (click)="closeModal('delete',subcategory.id)">
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAALRJREFUSEvtlbENwjAQRd8v2IQKVkiBxQoMkSHoGQGxAzMQanqQmAWJowoiUWJfooQmcWlZ752/7bMYeWhkPklBATnSsbEQszzAKVZkVFBAhnQBFi2Q19ss28KtTVIRFJINEVkw+3L/Kxii+jqj8Qz6RvUbTSmagKDcdj22pvleEc2C5C2aI5pARF0aoPuhXaW7waoLXPDYmK193RR2SAdg6ZQ8MdsHOLsETqhrWfLTd1Eiiz6DlpwZAElrcgAAAABJRU5ErkJggg=="/>
+              </a>
 
 
 
@@ -122,6 +158,26 @@
         </tr>
       </tbody>
     </table>
+    <!-- pagination -->
+    <nav aria-label="Page navigation example" *ngIf="subcategories.length > 0">
+      <ul class="pagination">
+        <li class="page-item" [class.disabled]="currentPage === 1">
+          <a class="page-link" (click)="goToPage(currentPage - 1, $event)" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+            <span class="sr-only">Previous</span>
+          </a>
+        </li>
+        <li class="page-item" *ngFor="let page of getPaginationArray()" [class.active]="currentPage === page">
+          <a class="page-link" (click)="goToPage(page, $event)">{{ page }}</a>
+        </li>
+        <li class="page-item" [class.disabled]="currentPage === totalPages">
+          <a class="page-link" (click)="goToPage(currentPage + 1, $event)" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+            <span class="sr-only">Next</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
   </div>
  
  <!-- add modal -->

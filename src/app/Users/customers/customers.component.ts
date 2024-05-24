@@ -13,6 +13,14 @@ export class CustomersComponent {
   postCustomerForm!: FormGroup;
   updateCustomerForm!: FormGroup;
   customers: Customer[] = [];
+  //pagination
+ page = 0;
+ pageSize = 5; 
+ totalItems = 0;
+ paginatedCustomer: Customer[] = [];
+ currentPage: number = 1;
+ itemsPerPage: number = 5;
+ selectedCategoryid: number | undefined;
 
   constructor(
     private customerService: CustomerService,
@@ -35,98 +43,110 @@ export class CustomersComponent {
     this.customerService.getAllUsers().subscribe((res) => {
       console.log(res);
       this.customers = res;
+      this.updatePaginatedProducts();
     });
   }
+  isConfirmDelete: boolean = false;
 
-  postUsers(){
-    console.log(this.postCustomerForm.value);
-    this.customerService.postUsers(this.postCustomerForm.value).subscribe((res)=>{
-    console.log(res);
-    this.loadCategories();
-    this.router.navigateByUrl("/Customer");
-  }
-)}
-updateUsers(): void {
-  const id = this.updateCustomerForm.get('id')?.value;
-  if (!id) {
-      console.error('ID is null');
-      return;
-  }
-  const updatedCustomer: Customer = {
-    id: id,
-    userName: this.updateCustomerForm.get('userName')?.value,
-    email: this.updateCustomerForm.get('email')?.value,
-    phone: this.updateCustomerForm.get('phone')?.value,
-    status: this.updateCustomerForm.get('status')?.value,
-    firstName: '',
-    lastName: '',
-    role: '',
-    createdAt: '',
-    updatedAt: '',
-    confirmedAt: ''
-  };
-  this.customerService.updateUsers(id, updatedCustomer).subscribe(
-      (res) => {
-          console.log(res);
-          this.router.navigateByUrl('/Customer');
+   confirmDelete(id: number): void {
+    console.log("loool")
+    this.selectedCategoryid = id;
+    this.isConfirmDelete = !this.isConfirmDelete;
+
+    this.customerService.deleteUsers(id).subscribe({
+      next: () => {
+
+        // Delete successful, reset selected field and hide modal
+        this.selectedCategoryid = 0;
+        this.getAllUsers();
+        
+        console.log('user deleted successfully');
+        
       },
-      (error) => {
-          console.error(error);
-          // Handle error appropriately
+      error: (error) => {
+        // Handle error if deletion fails
+        console.error('Error deleting field:', error);
       }
-  );
+    });
 
-  const modalupdate = document.getElementById('updateProductModal');
+    this.selectedCategoryid = 0;
+  } 
 
-  // Check if modal exists before performing operations
-  modalupdate?.classList.add('hidden');
-  modalupdate?.setAttribute('aria-hidden', 'true');
-}
-  toggleModalDelete() {
-    const modalDelete = document.getElementById('deleteModal');
-    if (modalDelete) {
-      modalDelete.classList.toggle('hidden');
-    }
-  }
-  closeModalCate() {
-    this.isModalOpen = false;
-  }
-
-  closeModalDelete() {
-    // Get the modal element
-    const modalDelete = document.getElementById('deleteModal');
-  
-    // Check if modal exists before performing operations
-    modalDelete?.classList.add('hidden');
-    modalDelete?.setAttribute('aria-hidden', 'true');
-  }
-  toggleModalUpdate() {
-    const modalupdate = document.getElementById('updateProductModal');
-    if (modalupdate) {
-      modalupdate.classList.toggle('hidden');
-    }
-  }
-  closeModalUpdate() {
-    // Get the modal element
-    const modalupdate = document.getElementById('updateProductModal');
-  
-    // Check if modal exists before performing operations
-    modalupdate?.classList.add('hidden');
-    modalupdate?.setAttribute('aria-hidden', 'true');
-  }
-
-  isModalOpen: boolean = false;
-
-  toggleModalUser(): void {
-    this.isModalOpen = !this.isModalOpen;
-  }
-  closeModal() {
-    this.isModalOpen = false;
-  }
 
   loadCategories() {
     this.customerService.getAllUsers().subscribe((customers) => {
       this.customers = customers;
     });
   }
+
+  loadProductsWithPagiantion() {
+    this.customerService.getAllUsers().subscribe(data => {
+      this.customers = data;
+  
+      this.updatePaginatedProducts();
+  
+    })
+  }
+  onPageChange(): void {
+    this.updatePaginatedProducts();
+  }
+  
+  updatePaginatedProducts() {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    this.paginatedCustomer = this.customers.slice(startIndex, endIndex);
+  }
+  goToPage(page: number, event?: MouseEvent): void {
+    if (event) {
+      event.preventDefault();
+    }
+    if (page < 1 || page > this.totalPages) return;
+    this.currentPage = page;
+    this.updatePaginatedProducts();
+  }
+  
+  get totalPages(): number {
+    return Math.ceil(this.customers.length / this.itemsPerPage);
+  }
+  
+  getPaginationArray(): number[] {
+    const totalPages = this.totalPages;
+    return Array.from({ length: totalPages }, (_, i) => i + 1);
+  }
+  // Enable user
+  enableUser(id: number): void {
+    this.customerService.enableUser(id).subscribe({
+      next: () => {
+        this.getAllUsers();
+        console.log('user enabled successfully');
+      },
+      error: (error) => {
+        console.error('Error enabling user:', error);
+      }
+    });
+  }
+
+  // Disable user
+  disableUser(id: number): void {
+    this.customerService.deleteUsers(id).subscribe({
+      next: () => {
+        this.getAllUsers();
+        console.log('user disabled successfully');
+      },
+      error: (error) => {
+        console.error('Error disabling user:', error);
+      }
+    });
+  }
+
+  // Toggle user status
+  toggleUserStatus(customer: Customer): void {
+    if (customer.status === 'ENABLED') {
+      this.disableUser(customer.id);
+    } else {
+      this.enableUser(customer.id);
+    }
+  }
+  
+
 }

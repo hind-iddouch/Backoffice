@@ -1,25 +1,47 @@
+<h1 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-6">Orders</h1>
 <div class="card">
-  <h1 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Orders</h1>
+
+  <div *ngIf="showErrorUpdateAlert" id="alert-border-2" class="fixed z-10 bottom-4 right-4 flex items-center p-4 mb-4 text-red-800 border-t-4 border-red-300 bg-red-50 dark:text-red-400 dark:bg-gray-800 dark:border-red-800" role="alert">
+    <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+      <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+    </svg>
+    <div class="ms-3 text-sm font-medium">
+      Error updating order status. Please try again later. 
+    </div>
+  </div>
+  <div *ngIf="showSuccessUpdateAlert" id="alert-border-2" class="fixed z-10 bottom-4 right-4 flex items-center p-4 mb-4 text-blue-800 border-t-4 border-blue-300 bg-blue-50 dark:text-blue-400 dark:bg-gray-800 dark:border-blue-800" role="alert">
+    <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+      <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+    </svg>
+    <div class="ms-3 text-sm font-medium">
+      Order status updated successfully! 
+    </div>
+  </div>
+
+  
+  
   <div class="table-responsive text-nowrap">
     <table class="table">
       <thead class="table-light">
         <tr>
           <th>Order ID</th>
-          <th>Customer ID</th>
+          <!-- <th>Customer ID</th> -->
           <th>UserName</th>
           <th>Total Quantity</th>
           <th>Total Price</th>
+          <th>Date</th>
           <th class="text-center">Status</th>
           <th>Action</th>
         </tr>
       </thead>
       <tbody class="table-border-bottom-0">
-        <tr *ngFor="let order of orders">
+        <tr *ngFor="let order of paginatedOrders">
           <td>{{order.orderResponse.orderId }}</td>
-          <td>{{ order.orderResponse.customerId }}</td>
+          <!-- <td>{{ order.orderResponse.customerId }}</td> -->
           <td>{{ order.userDTO.userName }}</td>
           <td>{{order.orderResponse.totalQuantity }}</td>
-          <td>{{ order.orderResponse.totalPrice }}</td>
+          <td>{{ order.orderResponse.totalPrice }} MAD</td>
+          <td>{{ order.orderResponse.createdAt| date }}</td>
           <td class="flex justify-center">
             <select [(ngModel)]="order.orderResponse.status" (change)="updateOrderStatus(order.orderResponse.orderId, order.orderResponse.status)" id="small"
               class="w-[150px] text-xs text-white border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -41,9 +63,7 @@
           <td>
             <a class="dropdown-item"  [routerLink]="['/Order_detail',order.orderResponse.orderId]" data-bs-toggle="modal"
               data-bs-target="#enableOTPDet">
-              <img
-                src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAhZJREFUSEu11UnIjlEUB/DfJxkixc4QyoIipFgpVjIkIcMCpSSJWMgCGcJKUqaSBaHEQjJGWciwkymSOdkqUoYI99R9835Pz/u83/fWe1fPcM79n3vO//+/Hdq8Otq8v2YAvbEQMzEBI/EX7/EI13EBvxoVWgUwC0fzplUHfY01uFUW1AhgZ6p0R074gHO4isf520TMxWIMy982YX8RpAygtvlXLMPl3JayAntgEU6gLzbgYH1gESCquoTvqeLJKflZF0kwBfcQgNNwt5ZXD9AfLzEYy3GmZPMYcKyyk2/EAbxIgx9fG3x94FocSX19jnEN2lIF0CuzKwqcj4vFSq4hmLMuA3WxO53C9mILjmN1EeBj+jEUo/C2ld0xFXfwMM1yUhHgW2ZCsOFHA4CqFkXKIHzCZwwsAgQtY9ADEM9lqxlA5H7J+fHciQ0x/dGZAU9bBIi2PMhEGVsEOJsothSbsa9FgG3YneZ4Os1xRREguH8KrzAGf7qpg55JP28wHEtwvggQw402RcDKZHInuwmwPttEiDWE9rNMkTNwowWrCFu5n61ieqZqQ8lvxZ7MhjC7KxWaCO+JdoSw+iWKxikOV5ld7d/2xLBd+eVdtutQ+hOEJYSVzMtOOiTbSjjpoWIxVRfOnGR8x7K6q4QdF84q3C4LanZl9klVL8DsPLgRudpgS/D9Zja1340qaAbQoiX9T2s7wD867mgZR73eegAAAABJRU5ErkJggg==" />
-            </a>
+              <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAwdJREFUSEvFlV1IFFEUx/9naFzFRciHIAsLAgsKC6GegnyKtpComHRmLAwiaj8oIXqoqInqKSLInY0MTGrnXuohoi8pCIw+3qIvCvOjJPKljAop07U5ObKWu+6urRCdpzuXc8/v3DPn/C/hHxv94/jICYgEAj4uLd3EzGsALAUwHwCDuRfAU1KUtuHi4ivNzc2JbIlmBYRNM8DMsWTQXBftBtFO23HuZnLKCAgbhsXA4eSBdyC65LruTZ/P98zbGxkZWcauWwNgM4C53h4T7Y05zsl0yCTAhOADpCj10Xj8+lhZMphlWUp/V5fGzOcBFAHYbQtxeqJrCiCo6zVEdA3AIJiX21K+/JsmiBjGChd4CEBh5lUxKR+Mn/sNCGqaX1HVTgZmE/OWqJTx9OAhwxi7iS3EpJuHTHMPmE8B6Ej4/ZXjP/4PQNeDRGSP1vWVLcSSTGXJBbA0raBfVXuTCW6ISnnVS+YPwDBuERAAUdh2HA+Ut4UM4ziA/cR8LirljhRASNffg2iOCyw4I8SbvKMDCOr6SiK6z8CTmBBVqQDD+O51wreCgqLW1tYfmQC5SuT5N2pa6bCqfgLwxRZiZjpgAIB/sLCwpKWlxVtPsqkAEdMscZm/AhiwhShJB3QAWEhElVHHeTEdQKi+vgqu+zjZKIvTAXK0xerAvM+W8sS0AIZxEMBRABdtIbamA7YAuMBA16yKikWWZbn5zIFVXT3jY1lZD4ByMNfaUl5OATRqWtGwqnplKmdgW0yI1nwAYV2PMJEnE53K58+VTW1tQykA7yNomquJ+Xa+UhE0zeXE/MiTCkVRqpvi8fuTpGJ8I6zrB5jo2GjXfQVRve04N7LNhCd2H16/riWicwCKGYjEhIhO9M8o1yFdPwSiI0nHt0R0iYhuDQ0NPfcBBT9V1ZOS9QRoAMrG1Jp5d1TKpvRksj44u+rq1ilEZ73pnmKqu13m7WekvJfJL+eT2dDQUOhPJDYy81oAlQDmJUWwh5gfu4pyZ1Zf31WrvX0kWxL/99GfjuCln/kFI29HKO8Z5gAAAAAASUVORK5CYII="/>            </a>
           </td>
 
 
@@ -56,9 +76,30 @@
 
       </tbody>
     </table>
+
+    <!-- pagination -->
+    <nav aria-label="Page navigation example" *ngIf="orders.length > 0">
+      <ul class="pagination">
+        <li class="page-item" [class.disabled]="currentPage === 1">
+          <a class="page-link" (click)="goToPage(currentPage - 1, $event)" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+            <span class="sr-only">Previous</span>
+          </a>
+        </li>
+        <li class="page-item" *ngFor="let page of getPaginationArray()" [class.active]="currentPage === page">
+          <a class="page-link" (click)="goToPage(page, $event)">{{ page }}</a>
+        </li>
+        <li class="page-item" [class.disabled]="currentPage === totalPages">
+          <a class="page-link" (click)="goToPage(currentPage + 1, $event)" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+            <span class="sr-only">Next</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
   </div>
 
-
-
-
 </div>
+
+
